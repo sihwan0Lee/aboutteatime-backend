@@ -6,14 +6,14 @@ from store.models import Store
 class ItemReview(models.Model):
 	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
 	item				= models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-	packaging_rating	= models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True)
-	fragrance_rating	= models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True)
-	taste_rating		= models.ForeignKey('Rating', on_delete=models.Set_NULL, null=True)
+	packaging_rating	= models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
+	fragrance_rating	= models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
+	taste_rating		= models.OneToOneField('Rating', on_delete=models.Set_NULL, null=True)
 	content				= models.CharField(max_length=500)
 	overall_rating		= models.DecimalField(max_degits=4, decimal_places=2)
 	created_at			= models.DateTimeField(auto_now_add=True)
 	modified_at			= models.DateTimeField(auto_now=True)
-	liked_by			= models.ManyToManyField('User', through='ItemLike', related_name='liked_item_reviews')
+	liked_by			= models.ManyToManyField('User', through='ItemReviewLike', related_name='liked_item_reviews')
 
 	def __str__(self):
 		return self.user + "-" + self.item + " review"
@@ -28,7 +28,7 @@ class StoreReview(models.Model):
 	rating				= models.DecimalField(max_digits=2, decimal_places=1)		
 	created_at			= models.DateTimeField(auto_now_add=True)
 	modified_at 		= models.DateTimeField(auto_now=True)
-	liked_by			= models.ManyToManyField('User', through='StoreLike', related_name='liked_store_reviews')
+	liked_by			= models.ManyToManyField('User', through='StoreReviewLike', related_name='liked_store_reviews')
 
 	def __str__(self):
 		return self.user + "-" + self.store + " review"
@@ -36,7 +36,7 @@ class StoreReview(models.Model):
 	class Meta:
 		db_table = 'store_reviews'
 
-class ItemRevImg(models.Model):
+class ItemReviewImage(models.Model):
 	reivew				= models.ForeignKey('ItemReview', on_delete=models.SET_NULL, null=True, related_name='images')
 	image_url			= models.URLField(max_length=3000)
 
@@ -47,7 +47,7 @@ class ItemRevImg(models.Model):
 		db_table = 'item_review_images'
 
 
-class StoreRevImg(models.Model):
+class StoreReviewImage(models.Model):
 	review				= models.ForeignKey('StoreReview', on_delete=models.SET_NULL, null=True, related_name='images')
 	image_url			= models.URLField(max_length=3000)
 	
@@ -58,7 +58,7 @@ class StoreRevImg(models.Model):
 		db_table = 'store_review_images'
 
 
-class ItemLike(models.Model):
+class ItemReviewLike(models.Model):
 	review				= models.ForeignKey('ItemReview', on_delete=models.SET_NULL, null=True, related_name='likes')
 	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
 	
@@ -69,7 +69,7 @@ class ItemLike(models.Model):
 		db_table = 'item_review_likes'
 
 
-class StoreLike(models.Model):
+class StoreReviewLike(models.Model):
 	review				= models.ForeignKey('StoreReview', on_delete=models.SET_NULL, null=True, related_name='likes')
 	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
 	
@@ -88,4 +88,4 @@ class Rating(models.Model):
 		return self.name
 
 	class Meta:
-		db_table = 'ratings_conversions'
+		db_table = 'rating_conversions'
