@@ -4,16 +4,16 @@ class User(models.Model):
     realname          = models.CharField(max_length=50)
     username          = models.CharField(max_length=50, unique=True)
     birthday          = models.DateField()
-    gender            = models.CharField(max_length=20) # male / female
+    gender            = models.CharField(max_length=20) 
     service_provider  = models.CharField(max_length=30)
     phone             = models.CharField(max_length=50, unique=True)
     password          = models.CharField(max_length=2000)
     group             = models.ForeignKey('UserGroup', on_delete=models.SET_NULL, null=True)
     tea_points        = models.IntegerField(default=0)
-    privacy_3rd_party = models.BooleanField() # privacy policy
-    privacy_foreign   = models.BooleanField() # privacy policy
-    point_message     = models.BooleanField() # advertisement policy
-    web_message       = models.BooleanField() # advertisement policy
+    privacy_3rd_party = models.BooleanField() 
+    privacy_foreign   = models.BooleanField() 
+    point_message     = models.BooleanField()
+    web_message       = models.BooleanField() 
     created_at        = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -73,8 +73,8 @@ class Address(models.Model):
         db_table = 'my_addresses'
 
 class Wishlist(models.Model):
-    user    = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-    item    = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+    user    = models.ForeignKey('User', on_delete=models.CASCADE)
+    item    = models.ForeignKey('Item', on_delete=models.CASCADE)
     
     def __str__(self):
         return user.name + "-" + user.item
