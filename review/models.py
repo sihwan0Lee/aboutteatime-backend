@@ -6,9 +6,9 @@ from store.models import Store
 class ItemReview(models.Model):
 	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
 	item				= models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-	packaging_rating	= models.ForeignKey('Ratings', on_delete=models.SET_NULL, null=True)
-	fragrance_rating	= models.ForeignKey('Ratings', on_delete=models.SET_NULL, null=True)
-	taste_rating		= models.ForeignKey('Ratings', on_delete=models.Set_NULL, null=True)
+	packaging_rating	= models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True)
+	fragrance_rating	= models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True)
+	taste_rating		= models.ForeignKey('Rating', on_delete=models.Set_NULL, null=True)
 	content				= models.CharField(max_length=500)
 	overall_rating		= models.DecimalField(max_degits=4, decimal_places=2)
 	created_at			= models.DateTimeField(auto_now_add=True)
@@ -38,7 +38,7 @@ class StoreReview(models.Model):
 
 class ItemRevImg(models.Model):
 	reivew				= models.ForeignKey('ItemReview', on_delete=models.SET_NULL, null=True, related_name='images')
-	image_url			= models.CharField(max_length=3000)
+	image_url			= models.URLField(max_length=3000)
 
 	def __str__(self):
 		return self.review + " image"
@@ -49,7 +49,7 @@ class ItemRevImg(models.Model):
 
 class StoreRevImg(models.Model):
 	review				= models.ForeignKey('StoreReview', on_delete=models.SET_NULL, null=True, related_name='images')
-	image_url			= models.CharField(max_length=3000)
+	image_url			= models.URLField(max_length=3000)
 	
 	def __str__(self):
 		return self.review + " image"
@@ -80,7 +80,7 @@ class StoreLike(models.Model):
 		db_table = 'store_review_likes'
 
 
-class Ratings(models.Model):
+class Rating(models.Model):
 	name				= models.CharField(max_length=45)
 	rating				= models.IntegerField()
 
