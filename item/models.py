@@ -3,8 +3,7 @@ from django.db import models
 
 class Item(models.Model):
     also_viewed        = models.ManyToManyField('self', through='AlsoViewed', symmetrical=False)
-    also_bought        = models.Many
-    ToManyField('self', through='AlsoBought', symmetrical=False)
+    also_bought        = models.ManyToManyField('self', through='AlsoBought', symmetrical=False)
     options            = models.ManyToManyField('self', through='OptionItem', symmetrical=False)
     main_category      = models.ForeignKey('MainCategory', on_delete=models.SET_NULL, null=True)
     sub_category       = models.ForeignKey('SubCategory', on_delete=models.SET_NULL, null=True)
@@ -14,7 +13,7 @@ class Item(models.Model):
     detail             = models.Textfield(null=True) 
     title              = models.CharField(max_length=100)
     description        = models.CharField(max_length=300)
-    price              = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    price              = models.DecimalField(max_digits=12, decimal_places=2)
     labels             = models.ManyToManyField('Label', through='Item_Label')
     benefits           = models.CharField(max_length=300)
 
@@ -31,8 +30,8 @@ class Item(models.Model):
         db_table = 'items'
 
 class Item_Label(models.Model):
-    item = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-    label = models.ForeignKey('Label', on_delete=models.SET_NULL, null=True)
+    item = models.ForeignKey('Item', on_delete=models.CASCADE)
+    label = models.ForeignKey('Label', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'item_labels'
