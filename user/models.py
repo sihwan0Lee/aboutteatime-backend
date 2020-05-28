@@ -10,11 +10,13 @@ class User(models.Model):
     password          = models.CharField(max_length=2000)
     group             = models.ForeignKey('UserGroup', on_delete=models.SET_NULL, null=True)
     tea_points        = models.IntegerField(default=0)
-    privacy_3rd_party = models.BooleanField() 
-    privacy_foreign   = models.BooleanField() 
-    point_message     = models.BooleanField()
-    web_message       = models.BooleanField() 
+    privacy_3rd_party = models.BooleanField(default=False) 
+    privacy_foreign   = models.BooleanField(default=False) 
+    point_message     = models.BooleanField(default=False)
+    web_message       = models.BooleanField(default=False) 
     created_at        = models.DateField(auto_now_add=True)
+    cart_coupons      = models.ManyToManyField('CartCoupon', through='UserCartCoupon')
+    mobile_coupons    = models.ManyToManyField('MobileCoupon', through='UserMobileCoupon') 
 
     def __str__(self):
         return self.username
@@ -32,8 +34,14 @@ class UserGroup(models.Model):
     class Meta:
         db_table = 'user_groups'
 
+class UserCartCoupon(models.Model):
+    user        = models.ForeignKey('User', on_delete=models.CASCADE)
+    coupon      = models.ForeignKey('CartCoupon', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'user_cart_coupons'
+
 class CartCoupon(models.Model):
-    user        = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     name        = models.CharField(max_length=50)
     discount    = models.Integerfield()
     start_date  = models.DateField()
@@ -46,8 +54,14 @@ class CartCoupon(models.Model):
     class Meta:
         db_table = 'cart_coupons'
 
+class UserMobileCoupon(models.Model):
+    user        = models.ForeignKey('User', on_delete=models.CASCADE)
+    coupon      = models.ForeignKey('MobileCoupon', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'user_mobile_coupons'
+
 class MobileCoupon(models.Model):
-    user            = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     name            = models.CharField(max_length=50)
     serial_number   = models.CharField(max_length=200, unique=True)
     expiry_date     = models.DateField()
