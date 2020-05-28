@@ -2,20 +2,21 @@ import json
 from django.db import models
 
 class Item(models.Model):
-    also_viewed = models.ManyToManyField('self', through='AlsoViewed', symmetrical=False)
-    also_bought = models.ManyToManyField('self', through='AlsoBought', symmetrical=False)
-    options     = models.ManyToManyField('self', through='OptionItem', symmetrical=False)
-    main_c      = models.ForeignKey('MainCategory', on_delete=models.SET_NULL, null=True)
-    sub_c       = models.ForeignKey('SubCategory', on_delete=models.SET_NULL, null=True)
-    third_c     = models.ForeignKey('ThirdCategory', on_delete=models.SET_NULL, null=True)
-    fourth_c    = models.ForeignKey('FourthCategory', on_delete=models.SET_NULL, null=True)
-    content     = models.TextField(null=True) # item introduction view in html
-    detail      = models.Textfield(null=True) # item detailed information view in html
-    title       = models.CharField(max_length=100)
-    description = models.CharField(max_length=300)
-    price       = models.DecimalField(max_digits=12, decimal_places=2, null=True)
-    labels      = models.ManyToManyField('Label', through='Item_Label')
-    benefits    = models.CharField(max_length=300)
+    also_viewed        = models.ManyToManyField('self', through='AlsoViewed', symmetrical=False)
+    also_bought        = models.Many
+    ToManyField('self', through='AlsoBought', symmetrical=False)
+    options            = models.ManyToManyField('self', through='OptionItem', symmetrical=False)
+    main_category      = models.ForeignKey('MainCategory', on_delete=models.SET_NULL, null=True)
+    sub_category       = models.ForeignKey('SubCategory', on_delete=models.SET_NULL, null=True)
+    third_category     = models.ForeignKey('ThirdCategory', on_delete=models.SET_NULL, null=True)
+    fourth_category    = models.ForeignKey('FourthCategory', on_delete=models.SET_NULL, null=True)
+    content            = models.TextField(null=True) 
+    detail             = models.Textfield(null=True) 
+    title              = models.CharField(max_length=100)
+    description        = models.CharField(max_length=300)
+    price              = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    labels             = models.ManyToManyField('Label', through='Item_Label')
+    benefits           = models.CharField(max_length=300)
 
     def set_benefits(self, benefit_list):
         self.benefits = json.dumps(benefit_list)
@@ -31,10 +32,10 @@ class Item(models.Model):
 
 class Item_Label(models.Model):
     item = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-    label = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+    label = models.ForeignKey('Label', on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        db_table = 'item_label'
+        db_table = 'item_labels'
 
 class Label(models.Model):
     name = models.CharField(max_length=30)
@@ -46,8 +47,8 @@ class Label(models.Model):
         db_table = 'labels'
 
 class AlsoViewed(models.Model):
-    current     = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-    viewed      = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+    current     = models.ForeignKey('Item', on_delete=models.CASCADE)
+    viewed      = models.ForeignKey('Item', on_delete=models.CASCADE)
     
     def __str__(self):
         return self.current + ":" + self.viewed
@@ -56,8 +57,8 @@ class AlsoViewed(models.Model):
         db_table = 'also_viewed_items'
 
 class AlsoBought(models.Model):
-    current     = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-    bought      = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+    current     = models.ForeignKey('Item', on_delete=models.CASCADE)
+    bought      = models.ForeignKey('Item', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.current + ":" + self.bought
@@ -66,8 +67,8 @@ class AlsoBought(models.Model):
         db_table = 'also_bought_items'
 
 class OptionItem(models.Model):
-    current     = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-    option      = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+    current     = models.ForeignKey('Item', on_delete=models.CASCADE)
+    option      = models.ForeignKey('Item', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.current + ":" + self.option
