@@ -4,16 +4,16 @@ from item.models import Item
 from store.models import Store
 
 class ItemReview(models.Model):
-	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-	item				= models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
-	packaging_rating	= models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
-	fragrance_rating	= models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
-	taste_rating		= models.OneToOneField('Rating', on_delete=models.Set_NULL, null=True)
-	content				= models.CharField(max_length=500)
-	overall_rating		= models.DecimalField(max_degits=4, decimal_places=2)
-	created_at			= models.DateTimeField(auto_now_add=True)
-	modified_at			= models.DateTimeField(auto_now=True)
-	liked_by			= models.ManyToManyField('User', through='ItemReviewLike', related_name='liked_item_reviews')
+	user			 = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+	item			 = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+	packaging_rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
+	fragrance_rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
+	taste_rating	 = models.OneToOneField('Rating', on_delete=models.Set_NULL, null=True)
+	content			 = models.CharField(max_length=500)
+	overall_rating	 = models.DecimalField(max_degits=4, decimal_places=2)
+	created_at		 = models.DateTimeField(auto_now_add=True)
+	modified_at		 = models.DateTimeField(auto_now=True)
+	liked_by		 = models.ManyToManyField('User', through='ItemReviewLike', related_name='liked_item_reviews')
 
 	def __str__(self):
 		return self.user + "-" + self.item + " review"
@@ -22,13 +22,13 @@ class ItemReview(models.Model):
 		db_table = 'item_reviews'
 
 class StoreReview(models.Model):
-	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-	store				= models.ForeignKey('Store', on_delete=models.SET_NULL, null=True)
-	content				= models.CharField(max_length=1000)
-	rating				= models.DecimalField(max_digits=2, decimal_places=1)		
-	created_at			= models.DateTimeField(auto_now_add=True)
-	modified_at 		= models.DateTimeField(auto_now=True)
-	liked_by			= models.ManyToManyField('User', through='StoreReviewLike', related_name='liked_store_reviews')
+	user        = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+	store		= models.ForeignKey('Store', on_delete=models.SET_NULL, null=True)
+	content	    = models.CharField(max_length=1000)
+	rating		= models.DecimalField(max_digits=2, decimal_places=1)		
+	created_at	= models.DateTimeField(auto_now_add=True)
+	modified_at = models.DateTimeField(auto_now=True)
+	liked_by	= models.ManyToManyField('User', through='StoreReviewLike', related_name='liked_store_reviews')
 
 	def __str__(self):
 		return self.user + "-" + self.store + " review"
@@ -37,8 +37,8 @@ class StoreReview(models.Model):
 		db_table = 'store_reviews'
 
 class ItemReviewImage(models.Model):
-	reivew				= models.ForeignKey('ItemReview', on_delete=models.SET_NULL, null=True, related_name='images')
-	image_url			= models.URLField(max_length=3000)
+	reivew = models.ForeignKey('ItemReview', on_delete=models.SET_NULL, null=True, related_name='images')
+	image_url = models.URLField(max_length=3000)
 
 	def __str__(self):
 		return self.review + " image"
@@ -48,8 +48,8 @@ class ItemReviewImage(models.Model):
 
 
 class StoreReviewImage(models.Model):
-	review				= models.ForeignKey('StoreReview', on_delete=models.SET_NULL, null=True, related_name='images')
-	image_url			= models.URLField(max_length=3000)
+	review = models.ForeignKey('StoreReview', on_delete=models.SET_NULL, null=True, related_name='images')
+	image_url = models.URLField(max_length=3000)
 	
 	def __str__(self):
 		return self.review + " image"
