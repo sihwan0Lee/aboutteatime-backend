@@ -20,15 +20,15 @@ class Order(models.Model):
 		db_table = 'orders'
 
 class OrderItem(models.Model):
-	order					= models.ForeignKey('Order', on_delete=models.CASCADE)
-	item					= models.ForeignKey('Item', on_delete=models.CASCADE)
-	quantity				= models.IntegerField()
+	order    = models.ForeignKey('Order', on_delete=models.CASCADE)
+	item     = models.ForeignKey('Item', on_delete=models.CASCADE)
+	quantity = models.IntegerField()
 
 	class Meta:
 		db_table = 'order_items'
 
 class OrderStatus(models.Model):
-	status					= models.CharField(max_length=45)
+	status = models.CharField(max_length=45)
 
 	def __str__(self):
 		return self.status
@@ -37,7 +37,7 @@ class OrderStatus(models.Model):
 		db_table = 'order_status'
 
 class PaymentMethod(models.Model):
-	method					= models.CharField(max_length=45)
+	method	= models.CharField(max_length=45)
 	
 	def __str__(self):
 		return self.method
