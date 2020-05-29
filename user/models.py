@@ -109,6 +109,3 @@ class Wishlist(models.Model):
 
     class Meta:
         db_table = 'wishlists'
-
-
-
