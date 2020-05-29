@@ -4,16 +4,16 @@ from item.models import Item
 from store.models import Store
 
 class ItemReview(models.Model):
-	user			 = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-	item			 = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+	user             = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+	item             = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
 	packaging_rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
 	fragrance_rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
-	taste_rating	 = models.OneToOneField('Rating', on_delete=models.Set_NULL, null=True)
-	content			 = models.CharField(max_length=500)
-	overall_rating	 = models.DecimalField(max_degits=4, decimal_places=2)
-	created_at		 = models.DateTimeField(auto_now_add=True)
-	modified_at		 = models.DateTimeField(auto_now=True)
-	liked_by		 = models.ManyToManyField('User', through='ItemReviewLike', related_name='liked_item_reviews')
+	taste_rating     = models.OneToOneField('Rating', on_delete=models.Set_NULL, null=True)
+	content          = models.CharField(max_length=500)
+	overall_rating   = models.DecimalField(max_degits=4, decimal_places=2)
+	created_at       = models.DateTimeField(auto_now_add=True)
+	modified_at      = models.DateTimeField(auto_now=True)
+	liked_by         = models.ManyToManyField('User', through='ItemReviewLike', related_name='liked_item_reviews')
 
 	def __str__(self):
 		return self.user + "-" + self.item + " review"
