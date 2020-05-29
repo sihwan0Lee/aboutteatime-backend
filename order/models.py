@@ -15,6 +15,7 @@ class Order(models.Model):
 	escrow_policy		= models.BooleanField(default=False)
 	items				= models.ManyToManyField('Item', through='OrderItem') 
 	ordered_date 		= models.DateTimeField(null=True)
+	price               = models.DecimalField(max_digits=12, decimal_places=2)
 	
 	def __str__(self):
 		return self.user
@@ -41,8 +42,6 @@ class OrderStatus(models.Model):
 
 class PaymentMethod(models.Model):
 	method = models.CharField(max_length=45)
-	
-	def __str__(self):
 		return self.method
 
 	class Meta:
