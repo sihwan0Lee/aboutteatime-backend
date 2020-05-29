@@ -14,8 +14,13 @@ class Item(models.Model):
     title              = models.CharField(max_length=100)
     description        = models.CharField(max_length=300)
     price              = models.DecimalField(max_digits=12, decimal_places=2)
+    discount_percent   = models.DecimalField(max_digits=4, decimal_places=3, default=1)
     labels             = models.ManyToManyField('Label', through='Item_Label')
     benefits           = models.CharField(max_length=300)
+    
+    @property
+    def points(self):
+        return self.price * 0.01
 
     def set_benefits(self, benefit_list):
         self.benefits = json.dumps(benefit_list)
@@ -75,39 +80,28 @@ class OptionItem(models.Model):
     class Meta:
         db_table = 'optional_items'
 
-class MainCategory(models.Model):
+class Category(models.Model):
     name        = models.CharField(max_length=100)
-    
+
     def __str__(self):
         return self.name
 
+    class Meta:
+        abstract = True
+
+class MainCategory(Category):
     class Meta:
         db_table = 'main_categories'
 
-class SubCategory(models.Model):
-    name        = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
+class SubCategory(Category):
     class Meta:
         db_table = 'sub_categories'
 
-class ThirdCategory(models.Model):
-    name        = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
+class ThirdCategory(Category):
     class Meta:
         db_table = 'third_categories'
 
-class FourthCategory(models.Model):
-    name        = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
+class FourthCategory(Category):
     class Meta:
         db_table = 'fourth_categories'
 
