@@ -4,8 +4,8 @@ from item.models import Item
 from store.models import Store
 
 class ItemReview(models.Model):
-	user             = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-	item             = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True)
+	user             = models.ForeignKey('User', on_delete=models.CASCADE)
+	item             = models.ForeignKey('Item', on_delete=models.CASCADE)
 	packaging_rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
 	fragrance_rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
 	taste_rating     = models.OneToOneField('Rating', on_delete=models.Set_NULL, null=True)
@@ -22,8 +22,8 @@ class ItemReview(models.Model):
 		db_table = 'item_reviews'
 
 class StoreReview(models.Model):
-	user        = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-	store		= models.ForeignKey('Store', on_delete=models.SET_NULL, null=True)
+	user        = models.ForeignKey('User', on_delete=models.CASCADE)
+	store		= models.ForeignKey('Store', on_delete=models.CASCADE)
 	content	    = models.CharField(max_length=1000)
 	rating		= models.DecimalField(max_digits=2, decimal_places=1)		
 	created_at	= models.DateTimeField(auto_now_add=True)
@@ -46,7 +46,6 @@ class ItemReviewImage(models.Model):
 	class Meta:
 		db_table = 'item_review_images'
 
-
 class StoreReviewImage(models.Model):
 	review = models.ForeignKey('StoreReview', on_delete=models.SET_NULL, null=True, related_name='images')
 	image_url = models.URLField(max_length=3000)
@@ -59,8 +58,8 @@ class StoreReviewImage(models.Model):
 
 
 class ItemReviewLike(models.Model):
-	review				= models.ForeignKey('ItemReview', on_delete=models.SET_NULL, null=True, related_name='likes')
-	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+	review	= models.ForeignKey('ItemReview', on_delete=models.SET_NULL, null=True, related_name='likes')
+	user	= models.ForeignKey('User', on_delete=models.CASCADE)
 	
 	def __str__(self):
 		return self.review + " like"
@@ -70,8 +69,8 @@ class ItemReviewLike(models.Model):
 
 
 class StoreReviewLike(models.Model):
-	review				= models.ForeignKey('StoreReview', on_delete=models.SET_NULL, null=True, related_name='likes')
-	user				= models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+	review	= models.ForeignKey('StoreReview', on_delete=models.CASCADE, related_name='likes')
+	user	= models.ForeignKey('User', on_delete=models.CASCADE)
 	
 	def __str__(self):
 		return self.review + " like"
@@ -81,8 +80,8 @@ class StoreReviewLike(models.Model):
 
 
 class Rating(models.Model):
-	name				= models.CharField(max_length=45)
-	rating				= models.IntegerField()
+	name	= models.CharField(max_length=45)
+	rating	= models.IntegerField()
 
 	def __str__(self):
 		return self.name
