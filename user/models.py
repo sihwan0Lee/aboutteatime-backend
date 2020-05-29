@@ -9,7 +9,7 @@ class User(models.Model):
     phone             = models.CharField(max_length=50, unique=True)
     password          = models.CharField(max_length=2000)
     group             = models.ForeignKey('UserGroup', on_delete=models.SET_NULL, null=True)
-    tea_points        = models.IntegerField(default=0)
+    points_sum        = models.PositiveIntegerField(default=0)
     privacy_3rd_party = models.BooleanField(default=False) 
     privacy_foreign   = models.BooleanField(default=False) 
     point_message     = models.BooleanField(default=False)
@@ -24,9 +24,23 @@ class User(models.Model):
     class Meta:
         db_table = 'users'
 
+class UnregisteredUser(models.Model):
+    recipient_ name   = models.CharField(max_length=50)
+    orderer_name      = models.CharField(max_length=50)
+    phone             = models.CharField(max_length=50)
+    email             = models.EmailField()
+    recipient_address = models.CharField(max_length=200)
+    orderer_address   = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'unregistered_users'
+
 class UserGroup(models.Model):
     name         = models.CharField(max_length=30, unique=True)
-    sum_paid     = models.IntegerField()
+    sum_paid     = models.PositiveIntegerField()
 
     def __str__(self):
         return self.name
@@ -43,7 +57,7 @@ class UserCartCoupon(models.Model):
 
 class CartCoupon(models.Model):
     name        = models.CharField(max_length=50)
-    discount    = models.Integerfield()
+    discount    = models.PositiveIntegerfield()
     start_date  = models.DateField()
     expiry_date = models.DateField()
     min_order   = models.DecimalField(max_digits=10, decimal_places=2)
