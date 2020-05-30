@@ -10,7 +10,7 @@ class Item(models.Model):
     third_category     = models.ForeignKey('ThirdCategory', on_delete=models.SET_NULL, null=True)
     fourth_category    = models.ForeignKey('FourthCategory', on_delete=models.SET_NULL, null=True)
     content            = models.TextField(null=True) 
-    detail             = models.Textfield(null=True) 
+    detail             = models.TextField(null=True) 
     title              = models.CharField(max_length=100)
     description        = models.CharField(max_length=300)
     price              = models.DecimalField(max_digits=12, decimal_places=2)

@@ -7,7 +7,7 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
 
-from aboutteatime.settings import SECRET, HASH
+from aboutteatime.settings import SECRET_KEY, HASH
 from user.models import User, UserGroup
 
 class SignUpView(View):
@@ -42,7 +42,7 @@ class SignInView(View):
             if User.objects.filter(username = data['username']).exists():
                 user = User.objects.get(username = data['username'])
                 if bcrypt.checkpw(data['password'].encode(‘utf-8’), user.password.encode(‘utf-8’)):
-                    token = jwt.encode({'user_id':user.id}, SECRET, algorithm=HASH)
+                    token = jwt.encode({'user_id':user.id}, SECRET_KEY, algorithm=HASH)
                     return JsonResponse({'token':token.decode('utf-8')}, status=200)
                 return HttpResponse(status=401)
             return JsonResponse({'error':'INCORRECT_USERNAME'}, status=401)

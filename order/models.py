@@ -24,14 +24,14 @@ class Order(models.Model):
 		db_table = 'orders'
 
 class OrderItem(models.Model):
-	order	      = models.ForeignKey('Order', on_delete=models.CASCADE)
-	item	      = models.ForeignKey('Item', on_delete=models.CASCADE)
-	quantity      = models.PositiveIntegerField()
+    order	      = models.ForeignKey('Order', on_delete=models.CASCADE)
+    item	      = models.ForeignKey('Item', on_delete=models.CASCADE)
+    quantity      = models.PositiveIntegerField()
     add_bag       = models.PositiveIntegerField()
     add_packaging = models.PositiveIntegerField()
-	
+
     class Meta:
-		db_table = 'order_items'
+        db_table = 'order_items'
 
 class OrderStatus(models.Model):
 	status = models.CharField(max_length=45)
@@ -43,10 +43,10 @@ class OrderStatus(models.Model):
 		db_table = 'order_status'
 
 class PaymentMethod(models.Model):
-	method = models.CharField(max_length=45)
-    
-    def __str__(self):	
+    method = models.CharField(max_length=45)
+
+    def __str__(self):
         return self.method
 
-	class Meta:
-		db_table = 'payment_methods'
+    class Meta:
+        db_table = 'payment_methods'

@@ -1,5 +1,5 @@
 import jwt
-from aboutteatime.settings import SECRET, HASH
+from aboutteatime.settings import SECRET_KEY, HASH
 from user.models import User
 
 def logindecorator(func):
@@ -7,7 +7,7 @@ def logindecorator(func):
         access_token = request.headers.get('Authorization', None)
         if access_token:
             try:
-                payload = jwt.decode(access_token, SECRET, algorithm = HASH)
+                payload = jwt.decode(access_token, SECRET_KEY, algorithm = HASH)
                 user_id = payload['id']
                 user = User.objects.get(pk=user_id)
                 request.user = user
