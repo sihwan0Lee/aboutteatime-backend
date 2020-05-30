@@ -34,7 +34,7 @@ class Item(models.Model):
     class Meta:
         db_table = 'items'
 
-class Item_Label(models.Model):
+class ItemLabel(models.Model):
     item = models.ForeignKey('Item', on_delete=models.CASCADE)
     label = models.ForeignKey('Label', on_delete=models.CASCADE)
 
