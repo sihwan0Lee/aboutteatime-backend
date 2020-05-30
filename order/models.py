@@ -7,7 +7,7 @@ class Order(models.Model):
 	unregistered_user	= models.ForeignKey('UnregisteredUser', on_delete=models.CASCADE, default=None)
 	status				= models.OneToOneField('OrderStatus', on_delete=models.SET_NULL, null=True)
 	payment_method		= models.ForeignKey('PaymentMethod', on_delete=models.SET_NULL, null=True)
-	request				= models.CharField(max_length=500)
+	request_message		= models.CharField(max_length=500)
 	tracking_number		= models.CharField(max_length=100)
 	final_price			= models.DecimalField(max_digits=12, decimal_places=2)
 	shipping_fee		= models.PositiveIntegerField(default=2500)
@@ -24,11 +24,13 @@ class Order(models.Model):
 		db_table = 'orders'
 
 class OrderItem(models.Model):
-	order	 = models.ForeignKey('Order', on_delete=models.CASCADE)
-	item	 = models.ForeignKey('Item', on_delete=models.CASCADE)
-	quantity = models.PositiveIntegerField()
-
-	class Meta:
+	order	      = models.ForeignKey('Order', on_delete=models.CASCADE)
+	item	      = models.ForeignKey('Item', on_delete=models.CASCADE)
+	quantity      = models.PositiveIntegerField()
+    add_bag       = models.PositiveIntegerField()
+    add_packaging = models.PositiveIntegerField()
+	
+    class Meta:
 		db_table = 'order_items'
 
 class OrderStatus(models.Model):
