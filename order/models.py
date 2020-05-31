@@ -28,7 +28,7 @@ class OrderItem(models.Model):
     item	      = models.ForeignKey('item.Item', on_delete=models.CASCADE)
     quantity      = models.PositiveIntegerField()
     add_bag       = models.PositiveIntegerField()
-    add_packaging = models.PositiveIntegerField()
+    add_packaging = models.PositiveIntegerField(default=0)
 
     class Meta:
         db_table = 'order_items'

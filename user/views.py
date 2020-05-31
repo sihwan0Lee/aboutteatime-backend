@@ -28,7 +28,7 @@ class SignUpView(View):
                 privacy_foreign   = True if data.get('privacy_foreign') else False,
                 point_message     = True if data.get('point_message') else False,
                 web_message       = True if data.get('web_message') else False
-            }
+            )
             new_user.save()
             new_user.cart_coupons.add(CartCoupon.objects.get(name='온라인신규회원가입'))
             return HttpResponse(status=200)
@@ -43,7 +43,7 @@ class SignInView(View):
         try:
             if User.objects.filter(username = data['username']).exists():
                 user = User.objects.get(username = data['username'])
-                if bcrypt.checkpw(data['password'].encode(‘utf-8’), user.password.encode(‘utf-8’)):
+                if bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
                     token = jwt.encode({'user_id':user.id}, SECRET_KEY, algorithm=HASH)
                     return JsonResponse({'token':token.decode('utf-8')}, status=200)
                 return HttpResponse(status=401)

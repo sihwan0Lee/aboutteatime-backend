@@ -18,6 +18,7 @@ class User(models.Model):
     created_at        = models.DateField(auto_now_add=True)
     cart_coupons      = models.ManyToManyField('CartCoupon', through='UserCartCoupon')
     mobile_coupons    = models.ManyToManyField('MobileCoupon', through='UserMobileCoupon') 
+    wish_items        = models.ManyToManyField('item.Item', through='Wishlist', related_name='wishlisted_users')
 
     def __str__(self):
         return self.username

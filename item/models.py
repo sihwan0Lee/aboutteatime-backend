@@ -17,6 +17,7 @@ class Item(models.Model):
     discount_percent   = models.DecimalField(max_digits=4, decimal_places=3, default=1)
     labels             = models.ManyToManyField('Label', through='ItemLabel')
     benefits           = models.CharField(max_length=300)
+    images             = models.OneToOneField('ItemImage', on_delete=models.SET_NULL, null=True)
     
     @property
     def points(self):
@@ -28,12 +29,40 @@ class Item(models.Model):
     def get_benefits(self):
         return json.loads(self.benefits)
     
+    def get_labels(self):
+        labels = self.labels.values('name', flat=True)
+        label_dict = {
+            'BEST' : False,
+            '선물용' : False,
+            '일시품절' : False,
+            'SALE' : False,
+            '사은품' : False,
+            'NEW' : False
+        }
+        if labels[0] == "":
+            return label_dict
+        for label in labels:
+            if label in label_dict:
+                label_dict[label] = True
+        return label_dict
+
     def __str__(self):
         return self.title
 
     class Meta:
         db_table = 'items'
 
+class ItemImage(models.Model):
+    main_url    = models.URLField(max_length=3000)
+    front_url   = models.URLField(max_length=3000)
+    hover_url   = models.URLField(max_length=3000) 
+
+    def __str__(self):
+        return 'images for ' + self.item 
+
+    class Meta:
+        db_table = 'item_images' 
+    
 class ItemLabel(models.Model):
     item = models.ForeignKey('Item', on_delete=models.CASCADE)
     label = models.ForeignKey('Label', on_delete=models.CASCADE)
