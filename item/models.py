@@ -2,20 +2,20 @@ import json
 from django.db import models
 
 class Item(models.Model):
-    also_viewed        = models.ManyToManyField('self', through='AlsoViewed', symmetrical=False)
-    also_bought        = models.ManyToManyField('self', through='AlsoBought', symmetrical=False)
-    options            = models.ManyToManyField('self', through='OptionItem', symmetrical=False)
+    also_viewed        = models.ManyToManyField('self', through='AlsoViewed', symmetrical=False, related_name='+')
+    also_bought        = models.ManyToManyField('self', through='AlsoBought', symmetrical=False, related_name='+')
+    options            = models.ManyToManyField('self', through='OptionItem', symmetrical=False, related_name='+')
     main_category      = models.ForeignKey('MainCategory', on_delete=models.SET_NULL, null=True)
     sub_category       = models.ForeignKey('SubCategory', on_delete=models.SET_NULL, null=True)
     third_category     = models.ForeignKey('ThirdCategory', on_delete=models.SET_NULL, null=True)
     fourth_category    = models.ForeignKey('FourthCategory', on_delete=models.SET_NULL, null=True)
     content            = models.TextField(null=True) 
-    detail             = models.Textfield(null=True) 
+    detail             = models.TextField(null=True) 
     title              = models.CharField(max_length=100)
     description        = models.CharField(max_length=300)
     price              = models.DecimalField(max_digits=12, decimal_places=2)
     discount_percent   = models.DecimalField(max_digits=4, decimal_places=3, default=1)
-    labels             = models.ManyToManyField('Label', through='Item_Label')
+    labels             = models.ManyToManyField('Label', through='ItemLabel')
     benefits           = models.CharField(max_length=300)
     
     @property
@@ -34,7 +34,7 @@ class Item(models.Model):
     class Meta:
         db_table = 'items'
 
-class Item_Label(models.Model):
+class ItemLabel(models.Model):
     item = models.ForeignKey('Item', on_delete=models.CASCADE)
     label = models.ForeignKey('Label', on_delete=models.CASCADE)
 
@@ -51,7 +51,7 @@ class Label(models.Model):
         db_table = 'labels'
 
 class AlsoViewed(models.Model):
-    current     = models.ForeignKey('Item', on_delete=models.CASCADE)
+    current     = models.ForeignKey('Item', on_delete=models.CASCADE, related_name='+')
     viewed      = models.ForeignKey('Item', on_delete=models.CASCADE)
     
     def __str__(self):
@@ -61,7 +61,7 @@ class AlsoViewed(models.Model):
         db_table = 'also_viewed_items'
 
 class AlsoBought(models.Model):
-    current     = models.ForeignKey('Item', on_delete=models.CASCADE)
+    current     = models.ForeignKey('Item', on_delete=models.CASCADE, related_name='+')
     bought      = models.ForeignKey('Item', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -71,7 +71,7 @@ class AlsoBought(models.Model):
         db_table = 'also_bought_items'
 
 class OptionItem(models.Model):
-    current     = models.ForeignKey('Item', on_delete=models.CASCADE)
+    current     = models.ForeignKey('Item', on_delete=models.CASCADE, related_name='+')
     option      = models.ForeignKey('Item', on_delete=models.CASCADE)
 
     def __str__(self):

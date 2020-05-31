@@ -1,4 +1,5 @@
 from django.db import models
+from item.models import Item
 
 class User(models.Model):
     realname          = models.CharField(max_length=50)
@@ -25,7 +26,7 @@ class User(models.Model):
         db_table = 'users'
 
 class UnregisteredUser(models.Model):
-    recipient_ name   = models.CharField(max_length=50)
+    recipient_name   = models.CharField(max_length=50)
     orderer_name      = models.CharField(max_length=50)
     phone             = models.CharField(max_length=50)
     email             = models.EmailField()
@@ -57,7 +58,7 @@ class UserCartCoupon(models.Model):
 
 class CartCoupon(models.Model):
     name        = models.CharField(max_length=50)
-    discount    = models.PositiveIntegerfield()
+    discount    = models.PositiveIntegerField()
     start_date  = models.DateField()
     expiry_date = models.DateField()
     min_order   = models.DecimalField(max_digits=10, decimal_places=2)
@@ -102,7 +103,7 @@ class Address(models.Model):
 
 class Wishlist(models.Model):
     user    = models.ForeignKey('User', on_delete=models.CASCADE)
-    item    = models.ForeignKey('Item', on_delete=models.CASCADE)
+    item    = models.ForeignKey('item.Item', on_delete=models.CASCADE)
     
     def __str__(self):
         return user.name + "-" + user.item
