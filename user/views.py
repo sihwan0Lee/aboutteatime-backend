@@ -8,27 +8,29 @@ from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
 
 from aboutteatime.settings import SECRET_KEY, HASH
-from user.models import User, UserGroup
+from user.models import User, UserGroup, CartCoupon
 
 class SignUpView(View):
     def post(self, request):
         data = json.loads(request.body)
         try:
             b_password = data['password'].encode('utf-8')  
-            User.objects.create(
+            new_user = User(
                 realname          = data['realname'],
                 username          = data['username'],
                 birthday          = data['birthday'],
                 gender            = data['gender'],
                 service_provider  = data['provider'],
                 phone             = data['phone'],
-                group             = UserGroup.objects.get(pk=1),
+                group             = UserGroup.objects.get(name='Green'),
                 password          = bcrypt.hashpw(b_password, bcrypt.gensalt()),
                 privacy_3rd_party = True if data.get('privacy_3rd_party') else False,
                 privacy_foreign   = True if data.get('privacy_foreign') else False,
                 point_message     = True if data.get('point_message') else False,
                 web_message       = True if data.get('web_message') else False
             }
+            new_user.save()
+            new_user.cart_coupons.add(CartCoupon.objects.get(name='온라인신규회원가입'))
             return HttpResponse(status=200)
         except IntegrityError:
             return JsonResponse({'error':'EXISTING_VALUE'}, status=400)
