@@ -1,4 +1,5 @@
 from django.db import models
+from item.models import Item
 
 class User(models.Model):
     realname          = models.CharField(max_length=50)
@@ -102,7 +103,7 @@ class Address(models.Model):
 
 class Wishlist(models.Model):
     user    = models.ForeignKey('User', on_delete=models.CASCADE)
-    item    = models.ForeignKey('Item', on_delete=models.CASCADE)
+    item    = models.ForeignKey('item.Item', on_delete=models.CASCADE)
     
     def __str__(self):
         return user.name + "-" + user.item
