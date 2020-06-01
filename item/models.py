@@ -30,7 +30,7 @@ class Item(models.Model):
         return json.loads(self.benefits)
     
     def get_labels(self):
-        labels = self.labels.values('name', flat=True)
+        labels = self.labels.values_list('name', flat=True)
         label_dict = {
             'BEST' : False,
             '선물용' : False,
