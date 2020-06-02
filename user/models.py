@@ -1,4 +1,5 @@
 from django.db import models
+
 from item.models import Item
 
 class User(models.Model):
@@ -53,6 +54,8 @@ class UserGroup(models.Model):
 class UserCartCoupon(models.Model):
     user        = models.ForeignKey('User', on_delete=models.CASCADE)
     coupon      = models.ForeignKey('CartCoupon', on_delete=models.CASCADE)
+    start_date  = models.DateField(auto_now_add=True, null=True)
+    expiry_date = models.DateField(null=True)
 
     class Meta:
         db_table = 'user_cart_coupons'
@@ -60,8 +63,6 @@ class UserCartCoupon(models.Model):
 class CartCoupon(models.Model):
     name        = models.CharField(max_length=50)
     discount    = models.PositiveIntegerField()
-    start_date  = models.DateField()
-    expiry_date = models.DateField()
     min_order   = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):

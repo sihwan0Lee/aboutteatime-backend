@@ -9,7 +9,7 @@ django.setup()
 
 from item.models import Item, MainCategory, SubCategory, ThirdCategory, FourthCategory, Label, ItemLabel, ItemImage
 
-CSV_PATH_PRODUCTS = '../tea_items_info2.csv'
+CSV_PATH_PRODUCTS = '../tea_items_info3.csv'
 
 def insert_products():
     with open(CSV_PATH_PRODUCTS) as in_file:

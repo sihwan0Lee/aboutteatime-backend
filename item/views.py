@@ -5,6 +5,7 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
 from django.db.models import Q
+from django.db.models import Avg
 
 from item.models import Item
 
@@ -26,19 +27,19 @@ class ItemListView(View):
 
     def evaluate_items(self, sort, category, packs):
         items = []
-        if pack[0] == 'all' and category == 'all':
-            items = select_sort(sort, Item.objects.all())
+        if packs[0] == 'all' and category == 'all':
+            items = self.select_sort(sort, Item.objects.all())
             return items
-        if pack[0] == 'all' and category != 'all':
+        if packs[0] == 'all' and category != 'all':
             qs = Item.objects.filter(third_category__name = category)
-            items = select_sort(sort, qs)
+            items = self.select_sort(sort, qs)
             return items
-        if pack[0] != 'all' and category == 'all':
+        if packs[0] != 'all' and category == 'all':
             qs = Item.objects.filter(select_pack(packs))
-            items = select_sort(sort, qs)
+            items = self.select_sort(sort, qs)
             return items
         qs = Item.objects.filter(select_pack(packs) & Q(third_category__name = category))
-        items = select_sort(sort, qs)
+        items = self.select_sort(sort, qs)
         return items
     
     def select_pack(self, packs):
@@ -85,9 +86,12 @@ class ItemDetailView(View):
     def get(self, request, item_id):
         item = Item.objects.get(id=item_id)
         label_dict = item.get_labels()
+        rating = item.itemreview_set.all().aggregate(Avg('overall_rating'))
+        if rating is None:
+            rating = 1
         item_dict = {
-            'sub_category' : item.sub_category,
-            'fourth_category' : item.fourth_category,
+            'sub_category' : item.sub_category.name,
+            'fourth_category' : item.fourth_category.name,
             'title' : item.title,
             'description' : item.description,
             'price' : item.price,
@@ -99,8 +103,8 @@ class ItemDetailView(View):
             'bonus' : label_dict['사은품'],
             'new' : label_dict['NEW'],
             'benefits' : item.get_benefits(),
-            'rating' : item.itemreview_set.all().aggregate(Avg('overall_rating')),
-            'num_reviews' : item.itemreview_set.count() ,
+            'rating' : rating,
+            'num_reviews' : item.itemreview_set.count(),
             'main_image' : item.images.main_url
         }
         return JsonResponse({'item':item_dict}, status=200)
