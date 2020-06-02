@@ -16,7 +16,7 @@ class Item(models.Model):
     price              = models.DecimalField(max_digits=12, decimal_places=2)
     discount_percent   = models.DecimalField(max_digits=4, decimal_places=3, default=1)
     labels             = models.ManyToManyField('Label', through='ItemLabel')
-    benefits           = models.CharField(max_length=300)
+    benefits           = models.CharField(max_length=300, null=True)
     images             = models.OneToOneField('ItemImage', on_delete=models.SET_NULL, null=True)
     
     @property
@@ -24,7 +24,7 @@ class Item(models.Model):
         return self.price * 0.01
 
     def set_benefits(self, benefit_list):
-        self.benefits = json.dumps(benefit_list)
+        self.benefits = json.dumps(benefit_list, ensure_ascii=False)
 
     def get_benefits(self):
         return json.loads(self.benefits)
