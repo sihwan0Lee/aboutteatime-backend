@@ -10,13 +10,13 @@ class ItemReview(models.Model):
 	fragrance_rating = models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True, related_name='fragrance')
 	taste_rating     = models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True, related_name='taste')
 	content          = models.CharField(max_length=500)
-	overall_rating   = models.DecimalField(max_digits=4, decimal_places=2)
+	overall_rating   = models.DecimalField(max_digits=3, decimal_places=1)
 	created_at       = models.DateTimeField(auto_now_add=True)
 	modified_at      = models.DateTimeField(auto_now=True)
 	liked_by         = models.ManyToManyField('user.User', through='ItemReviewLike', related_name='liked_item_reviews')
 
 	def __str__(self):
-		return self.user.username + "-" + self.item.name + " review"
+		return self.user.username + "-" + self.item.title + " review"
 	
 	class Meta:
 		db_table = 'item_reviews'

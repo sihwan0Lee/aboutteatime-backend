@@ -39,7 +39,7 @@ class Item(models.Model):
             '사은품' : False,
             'NEW' : False
         }
-        if labels[0] == "":
+        if labels is None:
             return label_dict
         for label in labels:
             if label in label_dict:

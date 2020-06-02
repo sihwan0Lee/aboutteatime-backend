@@ -35,10 +35,10 @@ class ItemListView(View):
             items = self.select_sort(sort, qs)
             return items
         if packs[0] != 'all' and category == 'all':
-            qs = Item.objects.filter(select_pack(packs))
+            qs = Item.objects.filter(self.select_pack(packs))
             items = self.select_sort(sort, qs)
             return items
-        qs = Item.objects.filter(select_pack(packs) & Q(third_category__name = category))
+        qs = Item.objects.filter(self.select_pack(packs) & Q(third_category__name = category))
         items = self.select_sort(sort, qs)
         return items
     
@@ -57,10 +57,10 @@ class ItemListView(View):
 
         items = self.evaluate_items(sort, category, packs)
 
-        num_pages = len(items)/OFFSET_PAGE + 1
+        num_pages = len(items)/self.OFFSET_PAGE + 1
         item_values = []
-        for i in range(OFFSET_PAGE * page, OFFSET_PAGE + (OFFSET_PAGE * page)):
-            if i >= len(items):
+        for i in range(self.OFFSET_PAGE * page, self.OFFSET_PAGE + (self.OFFSET_PAGE * page)):
+            if i >= len(items) - 1:
                  return JsonResponse({'items':item_values}, status=200)            
             label_dict = items[i].get_labels()
             item = {
@@ -86,9 +86,12 @@ class ItemDetailView(View):
     def get(self, request, item_id):
         item = Item.objects.get(id=item_id)
         label_dict = item.get_labels()
-        rating = item.itemreview_set.all().aggregate(Avg('overall_rating'))
-        if rating is None:
-            rating = 1
+        rating = 0
+
+        if item.itemreview_set.all():
+            rating_dict = item.itemreview_set.all().aggregate(Avg('overall_rating'))
+            rating = rating_dict["overall_rating__avg"]
+
         item_dict = {
             'sub_category' : item.sub_category.name,
             'fourth_category' : item.fourth_category.name,
