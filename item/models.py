@@ -64,8 +64,8 @@ class ItemImage(models.Model):
         db_table = 'item_images' 
     
 class ItemLabel(models.Model):
-    item = models.ForeignKey('Item', on_delete=models.CASCADE)
-    label = models.ForeignKey('Label', on_delete=models.CASCADE)
+    item    = models.ForeignKey('Item', on_delete=models.CASCADE)
+    label   = models.ForeignKey('Label', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'item_labels'
