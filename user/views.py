@@ -14,9 +14,7 @@ from user.models import User, UserGroup, CartCoupon, UserCartCoupon
 
 class SignUpView(View):
     def post(self, request):
-        print(1)
         data = json.loads(request.body)
-        print(data)
         try:
             e_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
             new_user = User(
