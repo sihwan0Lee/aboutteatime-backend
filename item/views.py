@@ -10,8 +10,6 @@ from django.db.models import Avg
 from item.models import Item
 
 class ItemListView(View):
-    ITEMS_IN_PAGE = 24
-
     def select_sort(self, sort, qs):
         if sort == 'review':
             items = list(qs.annotate(count=Count('itemreview')).order_by('-count'))
@@ -42,15 +40,16 @@ class ItemListView(View):
         return self.select_sort(sort, Item.objects.filter(category_q & pack_q))
 
     def get(self, request):
+        ITEMS_IN_PAGE = 24
         sort = request.GET.get('sort', 'review')
         category = request.GET.get('category', None)
         packs = request.GET.getlist('pack', None)
         page = int(request.GET.get('p', '0'))
         
         items = self.get_selected_items(sort, category, packs)
-        num_pages = len(items)//self.ITEMS_IN_PAGE + 1 if len(items)%self.ITEMS_IN_PAGE != 0 else len(items)//self.ITEMS_IN_PAGE
+        num_pages = len(items)//ITEMS_IN_PAGE + 1 if len(items)%ITEMS_IN_PAGE != 0 else len(items)//ITEMS_IN_PAGE
         item_values = []
-        for i in range(self.ITEMS_IN_PAGE * page, self.ITEMS_IN_PAGE + (self.ITEMS_IN_PAGE * page)):
+        for i in range(ITEMS_IN_PAGE * page, ITEMS_IN_PAGE + (ITEMS_IN_PAGE * page)):
             if i > len(items) - 1:
                 return JsonResponse({'items':item_values, 'num_pages':num_pages}, status=200)            
             label_dict = items[i].get_labels()

@@ -5,7 +5,7 @@ from item.models import Item
 class Order(models.Model):
 	user				= models.ForeignKey('user.User', on_delete=models.SET_NULL, null=True)
 	unregistered_user	= models.ForeignKey('user.UnregisteredUser', on_delete=models.CASCADE, default=None)
-	status				= models.OneToOneField('OrderStatus', on_delete=models.SET_NULL, null=True)
+	status				= models.ForeignKey('OrderStatus', on_delete=models.SET_NULL, null=True)
 	payment_method		= models.ForeignKey('PaymentMethod', on_delete=models.SET_NULL, null=True)
 	request_message		= models.CharField(max_length=500)
 	tracking_number		= models.CharField(max_length=100)
