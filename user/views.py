@@ -10,7 +10,9 @@ from django.utils.dateparse import parse_date
 
 
 from aboutteatime.settings import SECRET_KEY, HASH
-from user.models import User, UserGroup, CartCoupon, UserCartCoupon
+from user.models import User, UserGroup, CartCoupon, UserCartCoupon, Wishlist
+from item.models import Item
+from aboutteatime.utils import logindecorator
 
 class SignUpView(View):
     def post(self, request):
@@ -52,3 +54,20 @@ class SignInView(View):
             return JsonResponse({'error':'INCORRECT_USERNAME'}, status=401)
         except KeyError:
             return JsonResponse({'error':'INVALID_KEY'}, status = 400)
+
+class WishlistView(View):
+    @logindecorator
+    def post(self, request):
+        user = request.user
+        data = json.loads(request.body)
+        try:
+            is_addition = data['add']
+            item_id = data['item_id']
+            cur_item = Item.objects.get(id=item_id)
+            if is_addition:
+                Wishlist.objects.create(user=user, item=cur_item)
+            else:
+                Wishlist.objects.delete(user=user, item=cur_item)
+            return HttpResponse(status=200)
+        except KeyError:
+            return JsonResponse({'error':'INVALID_KEY'}, status=400)

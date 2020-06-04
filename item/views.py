@@ -31,10 +31,16 @@ class ItemListView(View):
         else:
             category_q = Q(sub_category__name='Tea Shop')
         if packs:
+            print(packs)
             queries = [Q(title__icontains=pack) if pack != '파우더' else Q(fourth_category__name = pack) for pack in packs]
+            print(queries)
             pack_q = queries.pop()
             for each_q in queries:
+                print(each_q)
+                print(type(each_q))
                 pack_q |= each_q
+            print(pack_q)
+            print(Item.objects.filter(pack_q))
         else:
             pack_q = Q(sub_category__name='Tea Shop')
         return self.select_sort(sort, Item.objects.filter(category_q & pack_q))
@@ -43,7 +49,10 @@ class ItemListView(View):
         ITEMS_IN_PAGE = 24
         sort = request.GET.get('sort', 'review')
         category = request.GET.get('category', None)
-        packs = request.GET.getlist('pack', None)
+        pack_qs = request.GET.get('pack', None)
+        packs = None
+        if pack_qs:
+            packs = pack_qs.split(',')
         page = int(request.GET.get('p', '0'))
         
         items = self.get_selected_items(sort, category, packs)
