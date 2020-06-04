@@ -17,6 +17,9 @@ class Order(models.Model):
 	ordered_date 		= models.DateTimeField(null=True)
 	total_price         = models.DecimalField(max_digits=12, decimal_places=2, null=True)
 	
+	def __str__(self):
+		return self.user.realname + '\'s order'
+
 	class Meta:
 		db_table = 'orders'
 
