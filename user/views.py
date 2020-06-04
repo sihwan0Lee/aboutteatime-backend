@@ -6,15 +6,19 @@ from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
+from django.utils.dateparse import parse_date
+
 
 from aboutteatime.settings import SECRET_KEY, HASH
-from user.models import User, UserGroup, CartCoupon
+from user.models import User, UserGroup, CartCoupon, UserCartCoupon
 
 class SignUpView(View):
     def post(self, request):
+        print(1)
         data = json.loads(request.body)
+        print(data)
         try:
-            b_password = data['password'].encode('utf-8')  
+            e_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
             new_user = User(
                 realname          = data['realname'],
                 username          = data['username'],
@@ -23,14 +27,14 @@ class SignUpView(View):
                 service_provider  = data['provider'],
                 phone             = data['phone'],
                 group             = UserGroup.objects.get(name='Green'),
-                password          = bcrypt.hashpw(b_password, bcrypt.gensalt()),
+                password          = e_password.decode('utf-8'),
                 privacy_3rd_party = True if data.get('privacy_3rd_party') else False,
                 privacy_foreign   = True if data.get('privacy_foreign') else False,
                 point_message     = True if data.get('point_message') else False,
                 web_message       = True if data.get('web_message') else False
-            }
+            )
             new_user.save()
-            new_user.cart_coupons.add(CartCoupon.objects.get(name='온라인신규회원가입'))
+            UserCartCoupon.objects.create(user=new_user, coupon=CartCoupon.objects.get(name='온라인신규회원가입'), expiry_date='2120-1-1')
             return HttpResponse(status=200)
         except IntegrityError:
             return JsonResponse({'error':'EXISTING_VALUE'}, status=400)
@@ -43,7 +47,7 @@ class SignInView(View):
         try:
             if User.objects.filter(username = data['username']).exists():
                 user = User.objects.get(username = data['username'])
-                if bcrypt.checkpw(data['password'].encode(‘utf-8’), user.password.encode(‘utf-8’)):
+                if bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
                     token = jwt.encode({'user_id':user.id}, SECRET_KEY, algorithm=HASH)
                     return JsonResponse({'token':token.decode('utf-8')}, status=200)
                 return HttpResponse(status=401)

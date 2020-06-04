@@ -1,32 +1,38 @@
 import json
 
 from django.views import View 
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
 
-from .models import ItemReview,ItemReviewImage,Rating,Item
-from order.models import Order
+from .models import ItemReview,ItemReviewImage,Rating,Order,OrderStatus,Item
+from Order.models import Order
 from aboutteatime.utils import logindecorator
 
 class ReviewWriteView(View):
-   # @logindecorator
+    @logindecorator
     def post(self, request):
         data = json.loads(request.body)
-        item_id_from_front = data['item_id_from_front']
-        user_id_from_front = data['user_id_from_front']
+        body = json.loads(request.body)
+        item_id_from_front = body['item_id_from_front']
+        user_id_from_front = body['user_id_from_front']
         if Item.objects.filter(id=item_id_from_front).exists() and Order.objects.filter(id=user_id_from_front).exists():
-            ItemReview(
-                user_id = 7, #request.user,
-                content = data['content'],
-                item_id = data['item_id_from_front'],
-                overall_rating   = data['overall_rating'],
+            Review(
+                comment   = data['content'],
+                image     = data['image_url'],
+                fragrance = data['fragrance_rating'],
+                delivery  = data['packaging_rating'],
+                flavor    = data['taste_rating'],
+                rating    = data['overall_rating'],
+                like      = data['liked_by']
                 ).save()
             return HttpResponse(status=200)
-        return JsonResponse({'comments':list(ItemReview.objects.values())}, status=200)
+        return JsonResponse({'comments':list(Review.objects.values())}, status=200)
+
 
 class ReviewView(View):
     def get(self, request):
-        item_id_from_front = request.GET.get('item_id_from_front')
+        body = json.loads(request.body)
+        item_id_from_front = body['item_id_from_front']
         reviews = ItemReview.objects.filter(item_id=item_id_from_front)
         allreviews=[]
         for review in reviews:
@@ -35,8 +41,9 @@ class ReviewView(View):
                 "comment"    : review.content,
                 "overallrate": review.overall_rating,
                 "date"       : review.created_at,
+                "image"      : [image.image_url for image in review.images.all()]
                 }
-            allreviews.append(all_info)
+        allreviews.append(all_info)
         return JsonResponse({'reviews':allreviews}, status=200)
 
 class ReviewDetailView(View):
