@@ -56,8 +56,8 @@ class ItemListView(View):
             item = {
                 'id' : items[i].id,
                 'title' : items[i].title,
-                'price' : items[i].price,
-                'discount_percent' : items[i].discount_percent,
+                'price' : float(items[i].price),
+                'discount_percent' : float(items[i].discount_percent),
                 'num_reviews' : items[i].itemreview_set.count(),
                 'num_wishlist' : items[i].wishlisted_users.count(),
                 'best' : label_dict['BEST'],
@@ -88,8 +88,8 @@ class ItemDetailView(View):
             'fourth_category' : item.fourth_category.name,
             'title' : item.title,
             'description' : item.description,
-            'price' : item.price,
-            'discount_percent' : item.discount_percent,
+            'price' : float(item.price),
+            'discount_percent' : float(item.discount_percent),
             'best' : label_dict['BEST'],
             'gift' : label_dict['선물용'],
             'sold_out' : label_dict['일시품절'],
@@ -97,7 +97,7 @@ class ItemDetailView(View):
             'bonus' : label_dict['사은품'],
             'new' : label_dict['NEW'],
             'benefits' : item.get_benefits(),
-            'rating' : f_rating,
+            'rating' : float(f_rating),
             'num_reviews' : item.itemreview_set.count(),
             'main_image' : item.images.main_url
         }
