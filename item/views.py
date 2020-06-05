@@ -10,19 +10,6 @@ from django.db.models import Avg
 from item.models import Item
 
 class ItemListView(View):
-    def select_sort(self, sort, qs):
-        if sort == 'review':
-            items = list(qs.annotate(count=Count('itemreview')).order_by('-count'))
-        elif sort == 'popular':
-            items = list(qs.annotate(count=Count('order')).order_by('-count'))
-        elif sort == 'new_arrival':
-            items = list(qs.order_by('-id'))
-        elif sort == 'price_desc':
-            items = list(qs.order_by('-price'))
-        elif sort == 'price_asc':
-            items = list(qs.order_by('price'))
-        return items
-    
     def get_selected_items(self, sort, category, packs):
         category_q = None
         pack_q = None
@@ -31,28 +18,29 @@ class ItemListView(View):
         else:
             category_q = Q(sub_category__name='Tea Shop')
         if packs:
-            print(packs)
             queries = [Q(title__icontains=pack) if pack != '파우더' else Q(fourth_category__name = pack) for pack in packs]
-            print(queries)
             pack_q = queries.pop()
             for each_q in queries:
-                print(each_q)
-                print(type(each_q))
                 pack_q |= each_q
-            print(pack_q)
-            print(Item.objects.filter(pack_q))
         else:
             pack_q = Q(sub_category__name='Tea Shop')
-        return self.select_sort(sort, Item.objects.filter(category_q & pack_q))
+        
+        item_qs = Item.objects.filter(category_q & pack_q)
+        SELECT_SORT = {
+            'review'        : list(item_qs.annotate(count=Count('itemreview')).order_by('-count')),
+            'popular'       : list(item_qs.annotate(count=Count('order')).order_by('-count')),
+            'new_arrival'   : list(item_qs.order_by('-id')),
+            'price_desc'    : list(item_qs.order_by('-price')),
+            'price_asc'     : list(item_qs.order_by('price'))
+        }
+        return SELECT_SORT[sort]
 
     def get(self, request):
         ITEMS_IN_PAGE = 24
         sort = request.GET.get('sort', 'review')
         category = request.GET.get('category', None)
         pack_qs = request.GET.get('pack', None)
-        packs = None
-        if pack_qs:
-            packs = pack_qs.split(',')
+        packs = pack_qs.split(',') if pack_qs else None
         page = int(request.GET.get('p', '0'))
         
         items = self.get_selected_items(sort, category, packs)
