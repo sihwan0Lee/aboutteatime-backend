@@ -2,21 +2,25 @@ import json
 
 from django.views import View 
 from django.http import JsonResponse,HttpResponse
-from django.core.serializers.json import DjangoJSONEncoder
 
-from .models import ItemReview,ItemReviewImage,Rating,Item
+from .models import(
+        ItemReview,
+        ItemReviewImage,
+        Rating,
+        Item
+)
 from order.models import Order
 from aboutteatime.utils import logindecorator
 
 class ReviewWriteView(View):
-   # @logindecorator
+    @logindecorator
     def post(self, request):
         data = json.loads(request.body)
         item_id_from_front = data['item_id_from_front']
         user_id_from_front = data['user_id_from_front']
         if Item.objects.filter(id=item_id_from_front).exists() and Order.objects.filter(id=user_id_from_front).exists():
             ItemReview(
-                user_id = 7, #request.user,
+                user_id = request.user,
                 content = data['content'],
                 item_id = data['item_id_from_front'],
                 overall_rating   = data['overall_rating'],

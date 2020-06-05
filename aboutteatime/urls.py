@@ -19,6 +19,5 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('item', include('item.urls')),
     path('review', include('review.urls')),
-#    path('order/', include('order.urls')),
-#    path('store/', include('store.urls'))
+    path('order/', include('order.urls'))
 ]
