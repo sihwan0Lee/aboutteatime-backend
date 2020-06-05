@@ -17,11 +17,10 @@ class ReviewWriteView(View):
     def post(self, request):
         data = json.loads(request.body)
         item_id_from_front = data['item_id_from_front']
-        user_id_from_front = data['user_id_from_front']
-        if Item.objects.filter(id=item_id_from_front).exists() and Order.objects.filter(id=user_id_from_front).exists():
+        if Item.objects.filter(id=item_id_from_front).exists() and Order.objects.filter(user_id=request.user.id).exists():
             ItemReview(
-                user_id = request.user,
-                content = data['content'],
+                user_id         = request.user.id,
+                content         = data['content'],
                 item_id = data['item_id_from_front'],
                 overall_rating   = data['overall_rating'],
                 ).save()
