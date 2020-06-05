@@ -5,6 +5,7 @@ from django.db.models import F, Sum
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.views import View
+from django.db import transaction, IntegrityError
 
 from .models import Order, OrderStatus, OrderItem, PaymentMethod
 from user.models import User
@@ -123,28 +124,33 @@ class OrderView(View):
             cash_receipt_phone = data.get('cash_receipt_phone', None)
             escrow_policy      = data.get('escrow_policy', False)
             
-            cur_order = user.order_set.filter(status__status='active_cart').first()
-            if len(orderitem_ids) == len(cur_order.orderitem_set.all()):
-                cur_order.status = OrderStatus.objects.get(status='order_placed')
-                cur_order.save()
-                Order.objects.create(user=user, status=OrderStatus.objects.get(status='active_cart'))
-            else:
-                new_order = Order(user=user, status=OrderStatus.objects.get(status='order_placed'))
-                new_order.save()
-                for each_id in orderitem_ids:
-                    OrderItem.objects.filter(id=each_id).update(order=new_order)
-            order_placed = user.order_set.filter(status__status='order_placed').order_by('id').first()
-            
-            order_placed.payment_method     = PaymentMethod.objects.get(method=payment_method)
-            order_placed.request_message    = request_message
-            order_placed.total_price        = total_price
-            order_placed.final_price        = final_price
-            order_placed.shipping_fee       = shipping_fee
-            order_placed.cash_receipt_phone = cash_receipt_phone if cash_receipt_phone else None
-            order_placed.escrow_policy      = escrow_policy if escrow_policy else False
-            order_placed.ordered_date       = timezone.now()
-            order_placed.save()
-            return HttpResponse(status=200)
+            with transaction.atomic():
+                cur_order = user.order_set.filter(status__status='active_cart').first()
+                if len(orderitem_ids) == len(cur_order.orderitem_set.all()):
+                    cur_order.status = OrderStatus.objects.get(status='order_placed')
+                    cur_order.save()
+                    order_placed = cur_order
+                    Order.objects.create(user=user, status=OrderStatus.objects.get(status='active_cart'))
+                else:
+                    new_order = Order(user=user, status=OrderStatus.objects.get(status='order_placed'))
+                    new_order.save()
+                    order_placed = new_order
+                    for each_id in orderitem_ids:
+                        OrderItem.objects.filter(id=each_id).update(order=new_order)
+                # order_placed = user.order_set.filter(status__status='order_placed').order_by('-id').first()
+                
+                order_placed.payment_method     = PaymentMethod.objects.get(method=payment_method)
+                order_placed.request_message    = request_message
+                order_placed.total_price        = total_price
+                order_placed.final_price        = final_price
+                order_placed.shipping_fee       = shipping_fee
+                order_placed.cash_receipt_phone = cash_receipt_phone if cash_receipt_phone else None
+                order_placed.escrow_policy      = escrow_policy if escrow_policy else False
+                order_placed.ordered_date       = timezone.now()
+                order_placed.save()
+                return HttpResponse(status=200)
+        except IntegrityError:    
+            return JsonResponse({'error':'TRANSACTION_FAILURE'}, status=400)
         except KeyError:
             return JsonResponse({'error':'INVALID_KEY'}, status=400)
 
