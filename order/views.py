@@ -95,8 +95,6 @@ class CartView(View):
             'final_cost'    : final_cost,
             'num_items'     : num_items
         }
-        print(cart_items)
-        print(summaries)
         return JsonResponse({'items': cart_items, 'summaries': summaries}, status=200)
 
     @logindecorator
