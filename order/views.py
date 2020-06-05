@@ -138,7 +138,6 @@ class OrderView(View):
                     order_placed = new_order
                     for each_id in orderitem_ids:
                         OrderItem.objects.filter(id=each_id).update(order=new_order)
-                # order_placed = user.order_set.filter(status__status='order_placed').order_by('-id').first()
                 
                 order_placed.payment_method     = PaymentMethod.objects.get(method=payment_method)
                 order_placed.request_message    = request_message
