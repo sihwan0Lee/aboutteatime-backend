@@ -6,8 +6,9 @@ from .models import Store,StoreType
 
 from django.core.serializers.json import DjangoJSONEncoder
 
-class StoreList(View):
-    def get(self, request):     #그냥 데이터 전부 띄워주면 된다아님?
+class StoreListView(View):
+
+    def get(self, request):
         stores = Store.objects.all()
         store_list=[]
         for store in stores:
@@ -20,7 +21,7 @@ class StoreList(View):
             store_list.append(info)
         return JsonResponse({'stores':store_list}, status=200)
 
-class StoreDetail(View):
+class StoreDetailView(View):
     def get(self, request):
         store_id = request.GET.get('id')
         store = Store.objects.get(id=store_id)
