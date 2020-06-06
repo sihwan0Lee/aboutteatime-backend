@@ -51,20 +51,20 @@ class ItemListView(View):
                 return JsonResponse({'items':item_values, 'num_pages':num_pages}, status=200)            
             label_dict = items[i].get_labels()
             item = {
-                'id' : items[i].id,
-                'title' : items[i].title,
-                'price' : float(items[i].price),
+                'id'               : items[i].id,
+                'title'            : items[i].title,
+                'price'            : float(items[i].price),
                 'discount_percent' : float(items[i].discount_percent),
-                'num_reviews' : items[i].itemreview_set.count(),
-                'num_wishlist' : items[i].wishlisted_users.count(),
-                'best' : label_dict['BEST'],
-                'gift' : label_dict['선물용'],
-                'sold_out' : label_dict['일시품절'],
-                'on_sale' : label_dict['SALE'],
-                'bonus' : label_dict['사은품'],
-                'new' : label_dict['NEW'],
-                'front' : items[i].images.front_url,
-                'hover' : items[i].images.hover_url,
+                'num_reviews'      : items[i].itemreview_set.count(),
+                'num_wishlist'     : items[i].wishlisted_users.count(),
+                'best'             : label_dict['BEST'],
+                'gift'             : label_dict['선물용'],
+                'sold_out'         : label_dict['일시품절'],
+                'on_sale'          : label_dict['SALE'],
+                'bonus'            : label_dict['사은품'],
+                'new'              : label_dict['NEW'],
+                'front'            : items[i].images.front_url,
+                'hover'            : items[i].images.hover_url,
             }
             item_values.append(item)
         return JsonResponse({'items':item_values, 'num_pages':num_pages}, status=200)
@@ -81,21 +81,21 @@ class ItemDetailView(View):
         f_rating = f'{rating:.1f}'
 
         item_dict = {
-            'sub_category' : item.sub_category.name,
-            'fourth_category' : item.fourth_category.name,
-            'title' : item.title,
-            'description' : item.description,
-            'price' : float(item.price),
-            'discount_percent' : float(item.discount_percent),
-            'best' : label_dict['BEST'],
-            'gift' : label_dict['선물용'],
-            'sold_out' : label_dict['일시품절'],
-            'on_sale' : label_dict['SALE'],
-            'bonus' : label_dict['사은품'],
-            'new' : label_dict['NEW'],
-            'benefits' : item.get_benefits(),
-            'rating' : float(f_rating),
-            'num_reviews' : item.itemreview_set.count(),
-            'main_image' : item.images.main_url
+            'sub_category'      : item.sub_category.name,
+            'fourth_category'   : item.fourth_category.name,
+            'title'             : item.title,
+            'description'       : item.description,
+            'price'             : float(item.price),
+            'discount_percent'  : float(item.discount_percent),
+            'best'              : label_dict['BEST'],
+            'gift'              : label_dict['선물용'],
+            'sold_out'          : label_dict['일시품절'],
+            'on_sale'           : label_dict['SALE'],
+            'bonus'             : label_dict['사은품'],
+            'new'               : label_dict['NEW'],
+            'benefits'          : item.get_benefits(),
+            'rating'            : float(f_rating),
+            'num_reviews'       : item.itemreview_set.count(),
+            'main_image'        : item.images.main_url
         }
         return JsonResponse({'item':item_dict}, status=200)
