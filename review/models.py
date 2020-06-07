@@ -41,7 +41,7 @@ class ItemReviewImage(models.Model):
 	image_url = models.URLField(max_length=3000)
 
 	def __str__(self):
-		return self.review + " image"
+		return self.review.item.title + " image"
 
 	class Meta:
 		db_table = 'item_review_images'

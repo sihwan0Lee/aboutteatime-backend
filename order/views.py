@@ -64,7 +64,6 @@ class CartView(View):
             active_order = Order(user=user, status=OrderStatus.objects.get(status='active_cart'))
             active_order.save()
         items = active_order.items.all()
-        print(items)
         num_bags = OrderItem.objects.filter(order=active_order).aggregate(Sum('add_bag'))['add_bag__sum'] 
         bag_price = num_bags * 100 if num_bags != None else 0
         cart_items = [
