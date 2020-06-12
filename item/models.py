@@ -21,7 +21,7 @@ class Item(models.Model):
     
     @property
     def points(self):
-        return self.price * 0.01
+        return float(self.price) * 0.01
 
     def set_benefits(self, benefit_list):
         self.benefits = json.dumps(benefit_list, ensure_ascii=False)
